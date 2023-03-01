@@ -11,7 +11,7 @@ public class DataGenerators {
         var random = new Random();
         var id = random.nextInt(10000);
         var price = random.nextInt(1000000)/100;
-        var quantity = random.nextInt(100);
+        var quantity = random.nextLong(10000);
         var side = List.of("Buy", "Sell").get(random.nextInt(0, 2));
         return new Order("" + id, price, quantity, side);
     }
@@ -20,7 +20,7 @@ public class DataGenerators {
         var random = new Random();
         var id = random.nextInt(10000);
         var price = random.nextInt(1000000)/100;
-        var quantity = random.nextInt(100);
+        var quantity = random.nextLong(10000);
         return new Order("" + id, price, quantity, "Buy");
     }
 
@@ -28,7 +28,7 @@ public class DataGenerators {
         var random = new Random();
         var id = random.nextInt(10000);
         var price = random.nextInt(1000000)/100;
-        var quantity = random.nextInt(100);
+        var quantity = random.nextLong(10000);
         return new Order("" + id, price, quantity, "Sell");
     }
 }
