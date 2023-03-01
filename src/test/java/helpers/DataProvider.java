@@ -1,6 +1,7 @@
 package helpers;
 
 public class DataProvider {
+
     @org.testng.annotations.DataProvider(name = "validIds")
     public Object[][] provideValidIds() {
         return new Object[][]{{"1"}, {"50"}, {"9999"}};

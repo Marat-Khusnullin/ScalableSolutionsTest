@@ -1,7 +1,5 @@
 package pojo;
 
-import pojo.Order;
-
 import java.util.List;
 
 public class MarketDataSnapshot {
