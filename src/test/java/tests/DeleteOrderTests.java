@@ -1,5 +1,12 @@
+package tests;
+
+import helpers.ApiCalls;
+import helpers.DataGenerators;
+import helpers.DataProvider;
 import io.restassured.response.Response;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+import pojo.Order;
 
 import java.util.LinkedList;
 
@@ -9,9 +16,9 @@ public class DeleteOrderTests {
 
     // В данном тесте проверяем как и отсутствие ошибок при попытке удалить данные по валидному айди,
     // так и успешное удаление сущности
-    @Test(dataProvider = "validIds", dataProviderClass = TestClass.class)
+    @Test(dataProvider = "validIds", dataProviderClass = DataProvider.class)
     public void deleteOrderByValidId(String validId) {
-        // Добавляем Order с валидным ID, по которому будем производить удаление
+        // Добавляем pojo.Order с валидным ID, по которому будем производить удаление
         var testOrder = DataGenerators.createRandomOrder();
         testOrder.setId(validId);
         ApiCalls.createOrder(testOrder).then().statusCode(200);
@@ -20,41 +27,41 @@ public class DeleteOrderTests {
         assertEquals(response.getStatusCode(), 200);
 
         Order responseOrder = response.body().as(Order.class);
-        assertEquals(responseOrder.getId(), testOrder.getId());
-        assertEquals(responseOrder.getPrice(), testOrder.getPrice());
-        assertEquals(responseOrder.getQuantity(), testOrder.getQuantity());
-        assertEquals(responseOrder.getSide().toLowerCase(), testOrder.getSide().toLowerCase());
+        Assert.assertEquals(responseOrder.getId(), testOrder.getId());
+        Assert.assertEquals(responseOrder.getPrice(), testOrder.getPrice());
+        Assert.assertEquals(responseOrder.getQuantity(), testOrder.getQuantity());
+        Assert.assertEquals(responseOrder.getSide().toLowerCase(), testOrder.getSide().toLowerCase());
 
         response = ApiCalls.getOrderById(validId);
         assertEquals(response.getStatusCode(), 404);
-        assertEquals(response.body().jsonPath().get("message"), "Order not found");
+        assertEquals(response.body().jsonPath().get("message"), "pojo.Order not found");
     }
 
-    // Тест на проверку ошибки при попытке удалить Order по ID, который не является Integer
-    @Test(dataProvider = "nonIntegerIds", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке удалить pojo.Order по ID, который не является Integer
+    @Test(dataProvider = "nonIntegerIds", dataProviderClass = DataProvider.class)
     public void deleteOrderByNonIntegerId(String nonIntegerId) {
         Response response = ApiCalls.deleteOrderById(nonIntegerId);
         assertEquals(response.getStatusCode(), 400);
         assertEquals(response.body().jsonPath().get("message"), "ID should be an integer");
     }
 
-    // Тест на проверку ошибки при попытке удалить Order по ID, который меньше или равен нулю
-    @Test(dataProvider = "lessOrEqualThanZeroIds", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке удалить pojo.Order по ID, который меньше или равен нулю
+    @Test(dataProvider = "lessOrEqualThanZeroIds", dataProviderClass = DataProvider.class)
     public void deleteOrderByLessOrEqualThanZeroId(String lessOrEqualThanZeroId) {
         Response response = ApiCalls.deleteOrderById(lessOrEqualThanZeroId);
         assertEquals(response.getStatusCode(), 400);
         assertEquals(response.body().jsonPath().get("message"), "ID can't be less or equal than 0");
     }
 
-    // Тест на проверку ошибки при попытке удалить Order по ID, который больше или равен 10000
-    @Test(dataProvider = "moreOrEqualThanTenThousandIds", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке удалить pojo.Order по ID, который больше или равен 10000
+    @Test(dataProvider = "moreOrEqualThanTenThousandIds", dataProviderClass = DataProvider.class)
     public void deleteOrderByMoreOrEqualThanTenThousandId(String moreOrEqualThanTenThousandId) {
         Response response = ApiCalls.deleteOrderById(moreOrEqualThanTenThousandId);
         assertEquals(response.getStatusCode(), 400);
         assertEquals(response.body().jsonPath().get("message"), "ID can't be more or equal than 10000");
     }
 
-    // Тест на проверку ошибки при попытке удалить Order по несуществующему ID
+    // Тест на проверку ошибки при попытке удалить pojo.Order по несуществующему ID
     @Test
     public void deleteOrderByNonExistentId() {
         // Предварительно вызываем удаление всех заказов
@@ -62,7 +69,7 @@ public class DeleteOrderTests {
 
         Response response = ApiCalls.deleteOrderById("1");
         assertEquals(response.getStatusCode(), 404);
-        assertEquals(response.body().jsonPath().get("message"), "Order not found");
+        assertEquals(response.body().jsonPath().get("message"), "pojo.Order not found");
     }
 
     // Тест на проверку удаления всех записей
@@ -79,13 +86,13 @@ public class DeleteOrderTests {
         Response response = ApiCalls.cleanOrderbook();
         assertEquals(response.getStatusCode(), 200);
         // Не уверен что тут сообщение с точкой. Не зафиксировал себе его при ручном прогоне тестов. Взял из задания
-        assertEquals(response.body().jsonPath().get("message"), "Order book is clean.");
+        assertEquals(response.body().jsonPath().get("message"), "pojo.Order book is clean.");
 
         // Проверяем, что каждый из добавленных раннее заказов удалился
         for (String listOfId : listOfIds) {
             response = ApiCalls.deleteOrderById(listOfId);
             assertEquals(response.getStatusCode(), 404);
-            assertEquals(response.body().jsonPath().get("message"), "Order not found");
+            assertEquals(response.body().jsonPath().get("message"), "pojo.Order not found");
         }
     }
 }

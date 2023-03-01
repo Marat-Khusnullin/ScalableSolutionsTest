@@ -1,13 +1,20 @@
+package tests;
+
+import helpers.ApiCalls;
+import helpers.DataGenerators;
+import helpers.DataProvider;
 import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 import org.testng.annotations.Test;
+import pojo.Order;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
 public class CreateOrderTests {
 
     // Тест на проверку создания нового заказа с валидными ID
-    @Test(dataProvider = "validIds", dataProviderClass = TestClass.class)
+    @Test(dataProvider = "validIds", dataProviderClass = DataProvider.class)
     public void createOrderWithValidId(String validId) {
         Order order = DataGenerators.createRandomOrder();
         order.setId(validId);
@@ -58,8 +65,8 @@ public class CreateOrderTests {
         assertEquals(createdOrder.getSide().toLowerCase(), order.getSide().toLowerCase());
     }
 
-    // Тест на проверку ошибки при попытке создать Order с ID, который не является Integer
-    @Test(dataProvider = "nonIntegerIds", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке создать pojo.Order с ID, который не является Integer
+    @Test(dataProvider = "nonIntegerIds", dataProviderClass = DataProvider.class)
     public void createOrderWithNonIntegerId(String nonIntegerId) {
         Order order = DataGenerators.createRandomOrder();
         order.setId(nonIntegerId);
@@ -69,8 +76,8 @@ public class CreateOrderTests {
         assertEquals(response.body().jsonPath().get("message"), "ID should be an integer");
     }
 
-    // Тест на проверку ошибки при попытке создать Order с ID, который меньше или равен нулю
-    @Test(dataProvider = "lessOrEqualThanZeroIds", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке создать pojo.Order с ID, который меньше или равен нулю
+    @Test(dataProvider = "lessOrEqualThanZeroIds", dataProviderClass = DataProvider.class)
     public void createOrderByLessOrEqualThanZeroId(String lessOrEqualThanZeroId) {
         Order order = DataGenerators.createRandomOrder();
         order.setId(lessOrEqualThanZeroId);
@@ -80,8 +87,8 @@ public class CreateOrderTests {
         assertEquals(response.body().jsonPath().get("message"), "ID can't be less or equal than 0");
     }
 
-    // Тест на проверку ошибки при попытке создать Order с ID, который больше или равен 10000
-    @Test(dataProvider = "moreOrEqualThanTenThousandIds", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке создать pojo.Order с ID, который больше или равен 10000
+    @Test(dataProvider = "moreOrEqualThanTenThousandIds", dataProviderClass = DataProvider.class)
     public void createOrderByMoreOrEqualThanTenThousandId(String moreOrEqualThanTenThousandId) {
         Order order = DataGenerators.createRandomOrder();
         order.setId(moreOrEqualThanTenThousandId);
@@ -92,8 +99,8 @@ public class CreateOrderTests {
     }
 
 
-    // Тест на проверку создания Order с корректным значением поля price
-    @Test(dataProvider = "validPrices", dataProviderClass = TestClass.class)
+    // Тест на проверку создания pojo.Order с корректным значением поля price
+    @Test(dataProvider = "validPrices", dataProviderClass = DataProvider.class)
     public void createOrderWithValidPrice(Double validPrice) {
         Order order = DataGenerators.createRandomOrder();
         order.setPrice(validPrice);
@@ -118,7 +125,7 @@ public class CreateOrderTests {
         assertEquals(createdOrder.getSide().toLowerCase(), responseOrder.getSide().toLowerCase());
     }
 
-    // Тест на проверку создания Order без поля price
+    // Тест на проверку создания pojo.Order без поля price
     // Судя по документации, поле Price - опциональное. Но проверить сценарий создания заказа без этого поля не успел
     @Test()
     public void createOrderWithoutPrice() {
@@ -145,8 +152,8 @@ public class CreateOrderTests {
         assertEquals(createdOrder.getSide().toLowerCase(), responseOrder.getSide().toLowerCase());
     }
 
-    // Тест на проверку ошибки при попытке создать Order с price, который больше или равен 10000
-    @Test(dataProvider = "moreOrEqualThanTenThousandPrices", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке создать pojo.Order с price, который больше или равен 10000
+    @Test(dataProvider = "moreOrEqualThanTenThousandPrices", dataProviderClass = DataProvider.class)
     public void createOrderByMoreOrEqualThanTenThousandPrice(Double moreOrEqualThanTenThousandPrice) {
         Order order = DataGenerators.createRandomOrder();
         order.setPrice(moreOrEqualThanTenThousandPrice);
@@ -156,8 +163,8 @@ public class CreateOrderTests {
         assertEquals(response.body().jsonPath().get("message"), "Price can't be more or equal than 10000");
     }
 
-    // Тест на проверку ошибки при попытке создать Order с price, который меньше или равен нулю
-    @Test(dataProvider = "lessOrEqualThanZeroPrices", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке создать pojo.Order с price, который меньше или равен нулю
+    @Test(dataProvider = "lessOrEqualThanZeroPrices", dataProviderClass = DataProvider.class)
     public void createOrderByLessOrEqualThanZeroPrice(Double lessOrEqualThanZeroPrice) {
         Order order = DataGenerators.createRandomOrder();
         order.setPrice(lessOrEqualThanZeroPrice);
@@ -167,7 +174,7 @@ public class CreateOrderTests {
         assertEquals(response.body().jsonPath().get("message"), "Price can't be less or equal than 0");
     }
 
-    // Тест на проверку ошибки при попытке создать Order с price, точность которой больше двух знаков после запятой
+    // Тест на проверку ошибки при попытке создать pojo.Order с price, точность которой больше двух знаков после запятой
     @Test
     public void createOrderByThreeSignPrecisionPrice() {
         Order order = DataGenerators.createRandomOrder();
@@ -178,8 +185,8 @@ public class CreateOrderTests {
         assertEquals(response.body().jsonPath().get("message"), "Price: Incorrect number of decimal digits");
     }
 
-    // Тест на проверку ошибки при попытке создать Order с price, который не является Double
-    @Test(dataProvider = "nonDoublePrices", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке создать pojo.Order с price, который не является Double
+    @Test(dataProvider = "nonDoublePrices", dataProviderClass = DataProvider.class)
     public void createOrderWithNonDoublePrice(String nonDoublePrice) {
         Order order = DataGenerators.createRandomOrder();
         JSONObject orderJson = new JSONObject();
@@ -194,8 +201,8 @@ public class CreateOrderTests {
     }
 
 
-    // Тест на проверку создания Order с корректным значением поля quantity
-    @Test(dataProvider = "validQuantities", dataProviderClass = TestClass.class)
+    // Тест на проверку создания pojo.Order с корректным значением поля quantity
+    @Test(dataProvider = "validQuantities", dataProviderClass = DataProvider.class)
     public void createOrderWithValidQuantity(Long validQuantities) {
         Order order = DataGenerators.createRandomOrder();
         order.setQuantity(validQuantities);
@@ -220,8 +227,8 @@ public class CreateOrderTests {
         assertEquals(createdOrder.getSide().toLowerCase(), responseOrder.getSide().toLowerCase());
     }
 
-    // Тест на проверку ошибки при попытке создать Order с quantity, который больше или равен 10000
-    @Test(dataProvider = "moreOrEqualThanTenThousandQuantities", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке создать pojo.Order с quantity, который больше или равен 10000
+    @Test(dataProvider = "moreOrEqualThanTenThousandQuantities", dataProviderClass = DataProvider.class)
     public void createOrderByMoreOrEqualThanTenThousandQuantity(Long moreOrEqualThanTenThousandQuantities) {
         Order order = DataGenerators.createRandomOrder();
         order.setQuantity(moreOrEqualThanTenThousandQuantities);
@@ -231,8 +238,8 @@ public class CreateOrderTests {
         assertEquals(response.body().jsonPath().get("message"), "Quantity can't be more or equal than 10000");
     }
 
-    // Тест на проверку ошибки при попытке создать Order с quantity, который меньше или равен нулю
-    @Test(dataProvider = "lessOrEqualThanZeroQuantities", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке создать pojo.Order с quantity, который меньше или равен нулю
+    @Test(dataProvider = "lessOrEqualThanZeroQuantities", dataProviderClass = DataProvider.class)
     public void createOrderByLessOrEqualThanZeroQuantity(Long lessOrEqualThanZeroQuantity) {
         Order order = DataGenerators.createRandomOrder();
         order.setQuantity(lessOrEqualThanZeroQuantity);
@@ -242,8 +249,8 @@ public class CreateOrderTests {
         assertEquals(response.body().jsonPath().get("message"), "Quantity can't be less or equal than 0");
     }
 
-    // Тест на проверку ошибки при попытке создать Order с quantity, который не является Long
-    @Test(dataProvider = "nonLongQuantities", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке создать pojo.Order с quantity, который не является Long
+    @Test(dataProvider = "nonLongQuantities", dataProviderClass = DataProvider.class)
     public void createOrderWithNonLongQuantity(String nonLongQuantity) {
         Order order = DataGenerators.createRandomOrder();
         JSONObject orderJson = new JSONObject();
@@ -257,7 +264,7 @@ public class CreateOrderTests {
         assertEquals(response.body().jsonPath().get("message"), "'Quantity' should be a long");
     }
 
-    // Тест на проверку ошибки при попытке создать Order без quantity
+    // Тест на проверку ошибки при попытке создать pojo.Order без quantity
     // Судя по документации, поле Quantity - обязательное. Но проверить сценарий создания заказа без этого поля не успел
     @Test
     public void createOrderWithoutQuantity() {
@@ -271,8 +278,8 @@ public class CreateOrderTests {
     }
 
 
-    // Тест на проверку создания Order с корректным значением поля side
-    @Test(dataProvider = "validSides", dataProviderClass = TestClass.class)
+    // Тест на проверку создания pojo.Order с корректным значением поля side
+    @Test(dataProvider = "validSides", dataProviderClass = DataProvider.class)
     public void createOrderWithValidQuantity(String validSide) {
         Order order = DataGenerators.createRandomOrder();
         order.setSide(validSide);
@@ -297,8 +304,8 @@ public class CreateOrderTests {
         assertEquals(createdOrder.getSide().toLowerCase(), responseOrder.getSide().toLowerCase());
     }
 
-    // Тест на проверку ошибки при попытке создать Order с невалидным значением поля side
-    @Test(dataProvider = "nonValidSides", dataProviderClass = TestClass.class)
+    // Тест на проверку ошибки при попытке создать pojo.Order с невалидным значением поля side
+    @Test(dataProvider = "nonValidSides", dataProviderClass = DataProvider.class)
     public void createOrderWithNonValidSide(String nonValidSide) {
         Order order = DataGenerators.createRandomOrder();
         order.setSide(nonValidSide);
@@ -308,7 +315,7 @@ public class CreateOrderTests {
         assertEquals(response.body().jsonPath().get("message"), "side: Incorrect value");
     }
 
-    // Тест на проверку ошибки при попытке создать Order без side
+    // Тест на проверку ошибки при попытке создать pojo.Order без side
     // Судя по документации, поле Side - обязательное. Но проверить сценарий создания заказа без этого поля не успел
     @Test
     public void createOrderWithoutSide() {

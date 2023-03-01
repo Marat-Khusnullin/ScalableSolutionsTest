@@ -1,3 +1,7 @@
+package helpers;
+
+import pojo.Order;
+
 import java.util.List;
 import java.util.Random;
 

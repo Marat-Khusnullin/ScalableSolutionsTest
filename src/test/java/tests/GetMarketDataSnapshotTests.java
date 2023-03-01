@@ -1,5 +1,12 @@
+package tests;
+
+import helpers.ApiCalls;
+import helpers.DataGenerators;
 import io.restassured.response.Response;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+import pojo.MarketDataSnapshot;
+import pojo.Order;
 
 import static org.testng.Assert.assertEquals;
 
@@ -25,12 +32,12 @@ public class GetMarketDataSnapshotTests {
         // Проверяем, что в полученном снэпшоте лежат добавленные раннее заказы
         MarketDataSnapshot marketDataSnapshot = response.body().as(MarketDataSnapshot.class);
         Order marketDataSellOrder = marketDataSnapshot.getAsks().get(0);
-        assertEquals(marketDataSellOrder.getPrice(), sellOrder.getPrice());
-        assertEquals(marketDataSellOrder.getQuantity(), sellOrder.getQuantity());
+        Assert.assertEquals(marketDataSellOrder.getPrice(), sellOrder.getPrice());
+        Assert.assertEquals(marketDataSellOrder.getQuantity(), sellOrder.getQuantity());
 
         Order marketDataBuyOrder = marketDataSnapshot.getBids().get(0);
-        assertEquals(marketDataBuyOrder.getPrice(), buyOrder.getPrice());
-        assertEquals(marketDataBuyOrder.getQuantity(), buyOrder.getQuantity());
+        Assert.assertEquals(marketDataBuyOrder.getPrice(), buyOrder.getPrice());
+        Assert.assertEquals(marketDataBuyOrder.getQuantity(), buyOrder.getQuantity());
     }
 
     // Тест на проверку очистки marketData после вызова Clean запроса
