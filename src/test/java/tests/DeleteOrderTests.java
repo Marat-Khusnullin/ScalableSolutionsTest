@@ -40,7 +40,7 @@ public class DeleteOrderTests {
         // Проверяем, что ранее удаленного заказа нет на сервере
         response = ApiCalls.getOrderById(validId);
         assertEquals(response.getStatusCode(), 404);
-        assertEquals(response.body().jsonPath().get("message"), "pojo.Order not found");
+        assertEquals(response.body().jsonPath().get("message"), "Order not found");
     }
 
     // Тест на проверку ошибки при попытке удалить заказ по ID, который не является Integer
@@ -72,7 +72,7 @@ public class DeleteOrderTests {
     public void deleteOrderByNonExistentId() {
         Response response = ApiCalls.deleteOrderById("1");
         assertEquals(response.getStatusCode(), 404);
-        assertEquals(response.body().jsonPath().get("message"), "pojo.Order not found");
+        assertEquals(response.body().jsonPath().get("message"), "Order not found");
     }
 
     // Тест на проверку удаления всех записей
@@ -89,13 +89,13 @@ public class DeleteOrderTests {
         Response response = ApiCalls.cleanOrderbook();
         assertEquals(response.getStatusCode(), 200);
         // Не уверен что тут сообщение с точкой. Не зафиксировал себе его при ручном прогоне тестов. Взял из задания
-        assertEquals(response.body().jsonPath().get("message"), "pojo.Order book is clean.");
+        assertEquals(response.body().jsonPath().get("message"), "Order book is clean.");
 
         // Проверяем, что каждый из добавленных раннее заказов удалился
         for (String listOfId : listOfIds) {
             response = ApiCalls.deleteOrderById(listOfId);
             assertEquals(response.getStatusCode(), 404);
-            assertEquals(response.body().jsonPath().get("message"), "pojo.Order not found");
+            assertEquals(response.body().jsonPath().get("message"), "Order not found");
         }
     }
 }
