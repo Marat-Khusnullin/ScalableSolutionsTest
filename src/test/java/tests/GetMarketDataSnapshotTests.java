@@ -4,20 +4,22 @@ import helpers.ApiCalls;
 import helpers.DataGenerators;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pojo.MarketDataSnapshot;
 import pojo.Order;
-
 import static org.testng.Assert.assertEquals;
 
 public class GetMarketDataSnapshotTests {
 
+    @BeforeMethod
+    public void cleanData(){
+        ApiCalls.cleanOrderbook().then().statusCode(200);
+    }
+
     // Тест на проверку получения снэпшота marketData
     @Test
     public void getMarketDataSnapshot() {
-        // Предварительно очищаем список заказов
-        ApiCalls.cleanOrderbook().then().statusCode(200);
-
         // Добавляем 1 заказ Buy и 1 заказ Sell
         var buyOrder = DataGenerators.createRandomBuyOrder();
         ApiCalls.createOrder(buyOrder).then().statusCode(200);
