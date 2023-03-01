@@ -7,7 +7,11 @@ import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import pojo.MarketDataSnapshot;
 import pojo.Order;
+
+import javax.xml.crypto.Data;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -371,5 +375,32 @@ public class CreateOrderTests {
         assertEquals(response.getStatusCode(), 400);
         // Тут нужно поменять сообщение на актуальное
         //assertEquals(response.body().jsonPath().get("message"), "'Side' tratata");
+    }
+
+    // Тест на проверку ошибки при создании заказа с уже существующим ID
+    @Test
+    public void createOrderWithExistingId() {
+        // Создаем заказ и сохраняем значение ID
+        Order order = DataGenerators.createRandomOrder();
+        var id = order.getId();
+
+        // Добавляем заказ на сервер
+        ApiCalls.createOrder(order).then().statusCode(200);
+
+        // Создаем заказ с раннее использованным ID
+        order = DataGenerators.createRandomOrder();
+        order.setId(id);
+
+        // Проверяем, что при попытке создать заказ в ответ пришла ошибка
+        Response response = ApiCalls.createOrder(order);
+        assertEquals(response.getStatusCode(), 400);
+        // Тут нужно поменять сообщение на актуальное
+        //assertEquals(response.body().jsonPath().get("message"), "Order with this id already exists");
+
+        // Проверяем, что в marketData лежит только один заказ
+        response = ApiCalls.getMarketDataSnapshot();
+        assertEquals(response.getStatusCode(), 200);
+        MarketDataSnapshot marketDataSnapshot = response.body().as(MarketDataSnapshot.class);
+        assertEquals(marketDataSnapshot.getAsks().size() + marketDataSnapshot.getBids().size(), 1);
     }
 }
