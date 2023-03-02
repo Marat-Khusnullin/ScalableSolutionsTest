@@ -52,7 +52,7 @@ public class GetMarketDataSnapshotTests {
         var sellOrder = DataGenerators.createRandomSellOrder();
         ApiCalls.createOrder(sellOrder).then().statusCode(200);
 
-        // Запрашиваем снэпшот marketData. Проверяем, что списки заказов пустые
+        // Запрашиваем снэпшот marketData. Проверяем, что списки заказов не пустые
         Response response = ApiCalls.getMarketDataSnapshot();
         assertEquals(response.getStatusCode(), 200);
         MarketDataSnapshot marketDataSnapshot = response.body().as(MarketDataSnapshot.class);
